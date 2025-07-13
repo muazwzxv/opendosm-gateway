@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
 	"embed"
 	"fmt"
+	"github.com/cschleiden/go-workflows/backend"
+	mysqlWorkflow "github.com/cschleiden/go-workflows/backend/mysql"
+	"github.com/cschleiden/go-workflows/worker"
 	"os"
 
 	"github.com/muazwzxv/opendosm-api/http/route"
@@ -59,6 +63,12 @@ func main() {
 		server.Logger.Error(err)
 		os.Exit(2)
 	}
+
+	ctx := context.Background()
+
+	b := mysqlWorkflow.NewMysqlBackend("", 0, "", "", "",
+		mysqlWorkflow.WithApplyMigrations(true))
+	go runWorker(ctx, b)
 }
 
 func registerServices(server *goyave.Server) {
@@ -71,4 +81,15 @@ func registerServices(server *goyave.Server) {
 	// https://goyave.dev/basics/services.html#service-container
 
 	// TODO register services
+}
+
+func runWorker(ctx context.Context, mb backend.Backend) {
+	w := worker.New(mb, nil)
+
+	//w.RegisterActivity(Activity1)
+	//w.RegisterActivity(Activity2)
+
+	if err := w.Start(ctx); err != nil {
+		panic("could not start worker")
+	}
 }
