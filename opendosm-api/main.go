@@ -83,6 +83,12 @@ func registerServices(server *goyave.Server) {
 	// TODO register services
 }
 
+func registerRepositories(server *goyave.Server) {
+	server.Logger.Info("Registering services")
+
+	// TODO register services
+}
+
 func runWorker(ctx context.Context, mb backend.Backend) {
 	w := worker.New(mb, nil)
 
