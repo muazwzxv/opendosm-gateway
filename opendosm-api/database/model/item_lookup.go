@@ -5,11 +5,12 @@ import (
 )
 
 type ItemLookup struct {
-	ID           int64  `gorm:"primarykey"`
+	ID int64 `gorm:"primarykey"`
+
 	ItemCode     string `gorm:"column:item_code"`
 	ItemName     string `gorm:"column:item_name"`
 	Unit         string `gorm:"column:unit"`
-	ItemGroup    string `gorm:"column:unit"`
+	ItemGroup    string `gorm:"column:item_group"`
 	ItemCategory string `gorm:"column:item_category"`
 
 	CreatedAt time.Time `gorm:"column:created_at"`
@@ -19,5 +20,5 @@ type ItemLookup struct {
 }
 
 func (ItemLookup) TableName() string {
-	return "item_lookup"
+	return "item_lookups"
 }

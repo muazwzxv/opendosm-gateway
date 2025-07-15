@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/muazwzxv/opendosm-api/database/model"
 	"gorm.io/gorm"
-	"log/slog"
+	"goyave.dev/goyave/v5/slog"
 )
 
 type ItemLookupRepository interface {
@@ -12,20 +12,22 @@ type ItemLookupRepository interface {
 }
 
 type item struct {
-	DB *gorm.DB
+	db  *gorm.DB
+	log *slog.Logger
 }
 
-func NewItemLookup(db *gorm.DB) ItemLookupRepository {
+func NewItemLookup(db *gorm.DB, log *slog.Logger) ItemLookupRepository {
 	return &item{
-		DB: db,
+		db:  db,
+		log: log,
 	}
 }
 
 func (r *item) GetByItemCode(ctx context.Context, itemCode string) (*model.ItemLookup, error) {
-	var item *model.ItemLookup
-	if err := r.DB.Where("item_code", itemCode).First(&item).Error; err != nil {
-		slog.Error("Error: %v", err)
+	var itemModel *model.ItemLookup
+	if err := r.db.WithContext(ctx).Where("item_code", itemCode).First(&itemModel).Error; err != nil {
+		r.log.ErrorContext(ctx, "Error querying item lookup, error: %v", err)
 		return nil, err
 	}
-	return item, nil
+	return itemModel, nil
 }

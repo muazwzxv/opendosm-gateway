@@ -7,6 +7,7 @@ import (
 	"github.com/cschleiden/go-workflows/backend"
 	mysqlWorkflow "github.com/cschleiden/go-workflows/backend/mysql"
 	"github.com/cschleiden/go-workflows/worker"
+	"github.com/muazwzxv/opendosm-api/database/repository"
 	"os"
 
 	"github.com/muazwzxv/opendosm-api/http/route"
@@ -45,6 +46,8 @@ func main() {
 
 	server.Logger.Info("Registering hooks")
 	server.RegisterSignalHook()
+
+	logger := server.Logger
 
 	server.RegisterStartupHook(func(s *goyave.Server) {
 		server.Logger.Info("Server is listening", "host", s.Host())
@@ -87,6 +90,11 @@ func registerRepositories(server *goyave.Server) {
 	server.Logger.Info("Registering services")
 
 	// TODO register services
+	itemLookupRepository := repository.NewItemLookup(server.DB(), server.Logger)
+	_ = itemLookupRepository
+
+	premiseLookupRepository := repository.NewPremiseLookup(server.DB(), server.Logger)
+	_ = premiseLookupRepository
 }
 
 func runWorker(ctx context.Context, mb backend.Backend) {
