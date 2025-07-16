@@ -2,8 +2,17 @@ package util
 
 import (
 	"errors"
+	"net/http"
+
 	"goyave.dev/goyave/v5"
 	"goyave.dev/goyave/v5/slog"
+)
+
+var (
+	BadRequest = &ErrorResponse{
+		HttpCode: http.StatusBadRequest,
+		Message:  "BAD_REQUEST",
+	}
 )
 
 type ErrorResponse struct {

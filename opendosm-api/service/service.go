@@ -10,6 +10,6 @@ package service
 
 // Name of the implemented services.
 const (
-	Premise = "premise"
-	Item    = "item"
+	Premise = "premise_service"
+	Item    = "item_service"
 )
