@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+
 	"github.com/muazwzxv/opendosm-api/database/model"
 	"gorm.io/gorm"
 	"goyave.dev/goyave/v5/slog"
@@ -26,7 +27,7 @@ func NewItemLookup(db *gorm.DB, log *slog.Logger) ItemLookupRepository {
 func (r *item) GetByItemCode(ctx context.Context, itemCode string) (*model.ItemLookup, error) {
 	var itemModel *model.ItemLookup
 	if err := r.db.WithContext(ctx).Where("item_code", itemCode).First(&itemModel).Error; err != nil {
-		r.log.ErrorContext(ctx, "Error querying item lookup, error: %v", err)
+		r.log.ErrorContext(ctx, "Error querying item lookup", "error", err)
 		return nil, err
 	}
 	return itemModel, nil
