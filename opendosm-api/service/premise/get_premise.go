@@ -1,4 +1,4 @@
-package item
+package premise
 
 import (
 	"context"
@@ -11,19 +11,19 @@ import (
 	"goyave.dev/goyave/v5/util/typeutil"
 )
 
-func (s *item) GetItem(ctx context.Context, itemCode string) (*dto.ItemDto, error) {
-	s.log.InfoContext(ctx, "get item by item code", "itemCode", itemCode)
+func (s *premise) GetPremise(ctx context.Context, premiseCode string) (*dto.PremiseDto, error) {
+	s.log.InfoContext(ctx, "get premise by premise code", "premiseCode", premiseCode)
 
-	itemModel, err := s.repository.GetByItemCode(ctx, itemCode)
+	premiseModel, err := s.repository.GetByPremiseCode(ctx, premiseCode)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, util.BuildError(http.StatusNotFound, "NOT_FOUND")
 		}
-		s.log.ErrorContext(ctx, "error querying item",
-			"itemCode", itemCode,
+		s.log.ErrorContext(ctx, "error querying premise",
+			"premiseCode", premiseCode,
 			"error", err)
 		return nil, util.BuildError(http.StatusInternalServerError, "INTERNAL_SERVER")
 	}
 
-	return typeutil.MustConvert[*dto.ItemDto](itemModel), nil
+	return typeutil.MustConvert[*dto.PremiseDto](premiseModel), nil
 }

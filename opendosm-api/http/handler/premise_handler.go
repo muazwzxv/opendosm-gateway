@@ -28,6 +28,12 @@ func (c *PremiseHandler) RegisterRoutes(router *goyave.Router) {
 
 func (c *PremiseHandler) GetByPremiseCode(resp *goyave.Response, req *goyave.Request) {
 	resp.JSON(http.StatusOK, map[string]any{
-		"items": nil,
+		"premise": nil,
+	})
+}
+
+func (c *PremiseHandler) ListPremise(resp *goyave.Response, req *goyave.Request) {
+	resp.JSON(http.StatusOK, map[string]any{
+		"premises": nil,
 	})
 }

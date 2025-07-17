@@ -25,8 +25,8 @@ func (c *ItemHandler) Init(server *goyave.Server) {
 func (c *ItemHandler) RegisterRoutes(router *goyave.Router) {
 	v1 := router.Subrouter("/v1")
 
-	v1.Get("/item/{itemCode}", c.GetByProductCode).ValidateBody(nil) // TODO: implement body validator
-	v1.Get("/item", c.ListItem).ValidateQuery(nil)                   // TODO: implement query validator
+	v1.Get("/item/{itemCode}", c.GetByProductCode)
+	v1.Get("/items", c.ListItem)
 }
 
 func (c *ItemHandler) GetByProductCode(resp *goyave.Response, req *goyave.Request) {
@@ -47,5 +47,11 @@ func (c *ItemHandler) GetByProductCode(resp *goyave.Response, req *goyave.Reques
 }
 
 func (c *ItemHandler) ListItem(resp *goyave.Response, req *goyave.Request) {
+	page := req.Query["page"].(int)
+	size := req.Query["size"].(int)
+
+	_ = page
+	_ = size
+
 	// TODO: implement the method
 }
