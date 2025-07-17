@@ -4,21 +4,24 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"os"
+
 	"github.com/cschleiden/go-workflows/backend"
 	mysqlWorkflow "github.com/cschleiden/go-workflows/backend/mysql"
 	"github.com/cschleiden/go-workflows/worker"
 	"github.com/muazwzxv/opendosm-api/database/repository"
 	"github.com/muazwzxv/opendosm-api/service/item"
-	"os"
+	"github.com/muazwzxv/opendosm-api/service/premise"
 
 	"github.com/muazwzxv/opendosm-api/http/route"
 
 	"goyave.dev/goyave/v5"
 	"goyave.dev/goyave/v5/util/errors"
 	"goyave.dev/goyave/v5/util/fsutil"
+
 	// Import the appropriate GORM dialect for the database you're using.
 	// _ "goyave.dev/goyave/v5/database/dialect/mysql"
-	// _ "goyave.dev/goyave/v5/database/dialect/postgres"
+	_ "goyave.dev/goyave/v5/database/dialect/postgres"
 	// _ "goyave.dev/goyave/v5/database/dialect/sqlite"
 	// _ "goyave.dev/goyave/v5/database/dialect/mssql"
 	// _ "goyave.dev/goyave/v5/database/dialect/clickhouse"
@@ -76,25 +79,24 @@ func main() {
 func registerServices(server *goyave.Server) {
 	server.Logger.Info("Registering services")
 
-	// Services represent the Domain/Business layer.
-	// This is where the core logic and value of your application resides.
-	// This function is where you will register your services in the server's
-	// service container to make them accessible to dependents.
-	// https://goyave.dev/basics/services.html#service-container
-
-	// TODO register services
-
+	// repository setup
 	itemLookupRepository := repository.NewItemLookup(server.DB(), server.Logger)
-	_ = itemLookupRepository
-
 	premiseLookupRepository := repository.NewPremiseLookup(server.DB(), server.Logger)
-	_ = premiseLookupRepository
 
+	// service setup
 	itemService := item.NewItemService(
 		itemLookupRepository,
 		server.Logger.With("service", "item_service"),
 	)
-	_ = itemService
+
+	premiseService := premise.NewPremiseService(
+		premiseLookupRepository,
+		server.Logger.With("service", "premise_service"),
+	)
+
+	// register service to instance container
+	server.RegisterService(itemService)
+	server.RegisterService(premiseService)
 }
 
 func runWorker(ctx context.Context, mb backend.Backend) {

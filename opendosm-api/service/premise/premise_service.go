@@ -1,13 +1,13 @@
 package premise
 
 import (
-	"log/slog"
-
 	"github.com/muazwzxv/opendosm-api/database/repository"
 	"github.com/muazwzxv/opendosm-api/service"
+	"goyave.dev/goyave/v5/slog"
 )
 
 type Service interface {
+	Name() string
 }
 
 type premise struct {
